@@ -123,6 +123,32 @@ def run_inference(model, cap):
             instance_masks=output_dict.get('detection_masks_reframed', None),
             use_normalized_coordinates=True,
             line_thickness=8)
+
+        ## using coordinates to get centroid of bounding box
+        coordinates = vis_util.return_coordinates(
+            image_np,
+            output_dict['detection_boxes'],
+            output_dict['detection_classes'],
+            output_dict['detection_scores'],
+            category_index,
+            use_normalized_coordinates=True,
+            line_thickness=8,
+            min_score_thresh=0.5)
+
+        if coordinates is not None:
+            for i in range(len(coordinates)):
+                for j in range(4):
+                    print("each coords : ", coordinates[i][j])
+
+
+        if coordinates is not None:
+            for i in range(len(coordinates)):
+                xCenter = (coordinates[i][0] + coordinates[i][2]) / 2
+                yCenter = (coordinates[i][1] + coordinates[i][3]) / 2
+
+                cv2.circle(image_np, (int(xCenter), int(yCenter)), 10, (255,0,0), -1)
+
+
         cv2.imshow('object_detection', cv2.resize(image_np, (800, 580)))
 ##################3
         '''
