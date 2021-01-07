@@ -155,14 +155,22 @@ def run_inference(model, cap):
                 for j in range(4):
                     print("each coords : ", coordinates[i][j])
 
-
+        ## define
+        xCenter = 0
+        yCenter = 0
         if coordinates is not None:
             for i in range(len(coordinates)):
                 xCenter = (coordinates[i][0] + coordinates[i][2]) / 2
                 yCenter = (coordinates[i][1] + coordinates[i][3]) / 2
+                #### depth of bounding box
+                x = int(xCenter)
+                y = int(yCenter)
+                _depth = Kinect._kinect.get_last_depth_frame()
+                z = int(_depth[y * 512 + x])
+                ## check and compare with body depth
+                print("bounding box depth : ", z)
 
-                cv2.circle(image_np, (int(xCenter), int(yCenter)), 10, (255,0,0), -1)
-
+        cv2.circle(image_np, (int(xCenter), int(yCenter)), 10, (255, 0, 0), -1)
 
         if Kinect._bodies is not None:
             if Kinect._kinect.has_new_depth_frame:
