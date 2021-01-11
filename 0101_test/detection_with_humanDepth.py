@@ -193,6 +193,8 @@ def run_inference(model, cap):
                     array_z.append(z)  # array의 필요성..?
                     print("depth spine : ", x)
         cv2.imshow('object_detection', cv2.resize(image_np, (800, 580)))
+
+        
 ##################3
         '''
         global count
