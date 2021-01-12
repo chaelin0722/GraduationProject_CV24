@@ -194,7 +194,7 @@ def run_inference(model, cap):
                     print("depth spine : ", x)
         cv2.imshow('object_detection', cv2.resize(image_np, (800, 580)))
 
-        
+
 ##################3
         '''
         global count
