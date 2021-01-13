@@ -1,18 +1,7 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-#import warnings
-#warnings.filterwarnings('ignore',category=FutureWarning)
 import numpy as np
-import six.moves.urllib as urllib
-import sys
-import tarfile
 import tensorflow as tf
-import zipfile
-from collections import defaultdict
-from io import StringIO
-from matplotlib import pyplot as plt
-from PIL import Image
-from IPython.display import display
 import pathlib
 from object_detection.utils import ops as utils_ops
 from object_detection.utils import label_map_util
@@ -37,12 +26,10 @@ frame = Frame()
 ### 소켓 통신 부분
 import sys
 from socket import *
-##
 BUFSIZE = 1024
 host = '127.0.0.1'
 port = 1111
 addr = host, port
-cap = cv2.VideoCapture(0)
 global count
 count = 1
 # patch tf1 into `utils.ops`
@@ -52,6 +39,11 @@ tf.gfile = tf.io.gfile
 print("[INFO] TF verion = ",tf.__version__)
 ###############
 ## DEPTH ##
+## define
+global xCenter
+global yCenter
+xCenter = 0
+yCenter = 0
 import pygame
 SKELETON_COLORS = [pygame.color.THECOLORS["red"],
                     pygame.color.THECOLORS["blue"],
@@ -105,20 +97,17 @@ def run_inference_for_single_image(model, image):
                                            tf.uint8)
         output_dict['detection_masks_reframed'] = detection_masks_reframed.numpy()
     return output_dict
-def run_inference(model, cap):
+
+def run_inference(model):
     fn = 0
     while True:
         Kinect.get_frame(frame)
         Kinect.get_color_frame()
         image_np = Kinect._kinect.get_last_color_frame()
-        # image_np = Kinect._frameRGB
-        image_depth = Kinect._frameDepthQuantized
-        Skeleton_img = Kinect._frameSkeleton
         image_np = np.reshape(image_np,
                               (Kinect._kinect.color_frame_desc.Height, Kinect._kinect.color_frame_desc.Width, 4))
         image_np = cv2.cvtColor(image_np, cv2.COLOR_RGBA2RGB)
-        image_np = cv2.resize(800,580)
-
+        image_np = cv2.resize(image_np, (800, 580))
         print("[INFO]" + str(fn) + "-th frame -- Running the inference and showing the result....!!!")
         output_dict = run_inference_for_single_image(model, image_np)
         # Visualization of the results of a detection.
@@ -144,7 +133,7 @@ def run_inference(model, cap):
         for box in bboxes:
             ymin, xmin, ymax, xmax = box
             final_box.append([xmin * im_width, xmax * im_width, ymin * im_height, ymax * im_height])
-        print('box: ', final_box)
+        print('box: ',final_box)
 
         if final_box is not None:
             for i in range(len(final_box)):
@@ -154,17 +143,17 @@ def run_inference(model, cap):
                 x = int(xCenter)
                 y = int(yCenter)
                 print('x, y = ',x,y)
-                _depth = Kinect._kinect.get_last_depth_frame()
-                z = int(_depth[y * 512 + x])
-                ## check and compare with body depth
-                print("bounding box depth : ", z)
+                if x < 300 and y < 300:
+                    _depth = Kinect._kinect.get_last_depth_frame()
+                    z = int(_depth[y * 512 + x])
+                    ## check and compare with body depth
+                    print("bounding box depth : ", z)
                 cv2.circle(image_np, (x,y), 10, (255, 0, 0), -1)
                 ## draw for just check!!
                 #cv2.line(image_np, (int(final_box[i][0]), int(final_box[i][3])),
                 #         (int(final_box[i][1]), int(final_box[i][3])), (255, 0, 0), 5, 4)
                 #cv2.line(image_np, (int(final_box[i][0]), int(final_box[i][2])),
                 #         (int(final_box[i][1]), int(final_box[i][2])), (255, 0, 0), 5, 4)
-
 
         if Kinect._bodies is not None:
             if Kinect._kinect.has_new_depth_frame:
@@ -185,13 +174,17 @@ def run_inference(model, cap):
                     array_x.append(x)
                     array_y.append(y)
                     array_z.append(z)  # array의 필요성..?
-                    print("depth spine : ", x)
-
+                    #print("depth spine : ", x)
+                    print('x, y :', x,y)
+                    print("depth spine : ", z)
         cv2.imshow('object_detection', image_np)
+
 ##################3
         '''
         global count
-        if output_dict['detection_scores'][0] >= 0.8 and count == 1:
+        #if output_dict['detection_scores'][0] >= 0.8 and count == 1:
+        if z == 180 :
+            ## test
             s = socket(AF_INET, SOCK_DGRAM)
             line = "emergency occured!"
             s.sendto(line.encode(), addr)
@@ -200,10 +193,9 @@ def run_inference(model, cap):
             count += 1
         # 다시 clinet로부터 ok 데이터 받으면 count를 1로 되돌려 놓고 다시 신호를 줄 준비를 하자
         '''
-############33
         fn = fn + 1
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break
 ## 실행!
-run_inference(detection_model, cap)
+run_inference(detection_model)
