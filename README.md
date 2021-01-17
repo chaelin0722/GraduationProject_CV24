@@ -1,7 +1,7 @@
 # CCTV_Project
 
 2021 Graduation Project
-<Real Time detecting using Kinect(xboxone)> detect dangerous behavior
+<Real Time detecting using Kinect(xboxone)> detect dangerous situation
 
 
 ## use depth camera
