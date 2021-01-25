@@ -5,7 +5,7 @@
 
 import sys
 from socket import *
-
+import datetime
 import os
 import requests
 from dotenv import load_dotenv
@@ -35,7 +35,8 @@ s.bind(('', 0))
 
 # 준비 완료 화면에 출력
 print('udp echo client ready, reading stdin')
-while 1:
+count = 0
+while count < 2:
     # 터미널 차(입력창)에서 타이핑을하고 ENTER키를 누를때 까지
     #line = sys.stdin.readline()
     # 변수에 값이 없다면
@@ -52,12 +53,18 @@ while 1:
     # print("data : ", data)
     # print(data['location']['lat'])
     # print(data['location']['lng'])
+
+    now = datetime.datetime.now()
+    nowDatetime = now.strftime('%Y-%m-%d %H:%M:%S')
+    print(nowDatetime)  # 2015-04-19 12:11:32
+
     total_info = {
         "addr": {
             "lat": lat,
             "long": long
         },
-        "situation": "emergency occured"
+        "situation": "emergency occured",
+        "DateTime" : nowDatetime
     }
 
     # 입력받은 텍스트를 서버로 발송
@@ -66,7 +73,7 @@ while 1:
     data, fromaddr = s.recvfrom(BUFSIZE)
     # 서버로부터 받은 메시지 출력
     print('client received %r from %r' % (data, fromaddr))
-
+    count = count+1
 '''
 import sys
 from socket import *
