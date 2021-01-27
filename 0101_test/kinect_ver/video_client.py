@@ -1,4 +1,3 @@
-
 from socket import *
 import cv2
 import numpy as np
@@ -24,13 +23,15 @@ while True:
     image_np = np.reshape(image_np,
                           (Kinect._kinect.color_frame_desc.Height, Kinect._kinect.color_frame_desc.Width, 4))
     image_np = cv2.cvtColor(image_np, cv2.COLOR_RGBA2RGB)
-    image_np = cv2.resize(image_np, (480,640))
+    image_np = cv2.resize(image_np, (640,480))
 
     d = image_np.flatten()
     str = d.tostring()
 
-    for i in range(20):
-        s.sendto(bytes([i]) + str[i * 46080:(i + 1) * 46080], (UDP_IP, UDP_PORT))
+    #for i in range(20):
+    #    s.sendto(bytes([i]) + str[i * 46080:(i + 1) * 46080], (UDP_IP, UDP_PORT))
+    for i in range(30):
+        s.sendto(bytes([i]) + str[i * 61440:(i + 1) * 61440], (UDP_IP, UDP_PORT))
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
