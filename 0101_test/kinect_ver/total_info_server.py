@@ -1,19 +1,40 @@
 import socket
 import numpy
 import cv2
+from socket import *
+##
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 9090
-
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind((UDP_IP, UDP_PORT))
 
 s = [b'\xff' * 61440 for x in range(30)]
 
 fourcc = cv2.VideoWriter_fourcc(*'DIVX')
 out = cv2.VideoWriter('output.avi', fourcc, 25.0, (640, 480))
 
+###
+UDP_IP2 = "127.0.0.1"
+UDP_PORT2 = 9090
+addr2 = UDP_IP2, UDP_PORT2
+sock2 = socket(AF_INET, SOCK_DGRAM)
+sock2.bind(('', UDP_PORT2))
+# sock2.bind((UDP_IP2, UDP_PORT2))
+
+test, addr2 = sock2.recvfrom(1024)
+# 받은 메시지와 클라이언트 주소 화면에 출력
+print('server received %r from %r' % (test, addr2))
+
+# 받은 메시지를 클라이언트로 다시 전송
+sock2.sendto(test, addr2)
 while True:
+
+
+    #########
+
+    UDP_IP = "127.0.0.1"
+    UDP_PORT = 9091
+    addr = UDP_IP, UDP_PORT
+    sock = socket(AF_INET, SOCK_DGRAM)
+    sock.bind((UDP_IP, UDP_PORT))
+
     picture = b''
 
     data, addr = sock.recvfrom(61441)
@@ -30,8 +51,10 @@ while True:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break
-
-''' ERROR!
+    ''' ERROR!
  DeprecationWarning: The binary mode of fromstring is deprecated, as it behaves surprisingly on unicode inputs. Use frombuffer instead
   frame = numpy.fromstring(picture, dtype=numpy.uint8)
+  
+  
+  
 '''
