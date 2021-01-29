@@ -3,17 +3,17 @@ import numpy
 import cv2
 from socket import *
 ##
-
-
 s = [b'\xff' * 61440 for x in range(30)]
 
 fourcc = cv2.VideoWriter_fourcc(*'DIVX')
 out = cv2.VideoWriter('output.avi', fourcc, 25.0, (640, 480))
 
 ###
-UDP_IP2 = "127.0.0.1"
+UDP_IP = "192.168.0.42"
+
+
 UDP_PORT2 = 9090
-addr2 = UDP_IP2, UDP_PORT2
+addr2 = UDP_IP, UDP_PORT2
 sock2 = socket(AF_INET, SOCK_DGRAM)
 sock2.bind(('', UDP_PORT2))
 # sock2.bind((UDP_IP2, UDP_PORT2))
@@ -24,12 +24,9 @@ print('server received %r from %r' % (test, addr2))
 
 # 받은 메시지를 클라이언트로 다시 전송
 sock2.sendto(test, addr2)
+
+
 while True:
-
-
-    #########
-
-    UDP_IP = "127.0.0.1"
     UDP_PORT = 9091
     addr = UDP_IP, UDP_PORT
     sock = socket(AF_INET, SOCK_DGRAM)
