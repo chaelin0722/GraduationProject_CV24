@@ -44,8 +44,8 @@ while count < 1:
         "situation": "emergency occured",
         "DateTime": nowDatetime,
     }
-    UDP_IP2 = "192.168.0.44"
-    UDP_PORT2 = 3001
+    UDP_IP2 = "192.168.0.44" #0.59
+    UDP_PORT2 = 9090
     addr2 = UDP_IP2, UDP_PORT2
     s2 = socket(AF_INET, SOCK_DGRAM)
 

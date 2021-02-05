@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FullInfoPop"
+    android:background="#000000">
+    <TextView
+        android:id="@+id/imageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:text="imageView입니다."
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="310dp"
+        android:layout_height="176dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="76dp"
+        android:stretchColumns="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TableRow
+            android:id="@+id/SITUATION"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/situationIcon"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="폭력유형"
+                app:srcCompat="@android:drawable/ic_menu_info_details" />
+
+            <TextView
+                android:id="@+id/situation"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="폭력유형"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                app:layout_constraintHeight_percent="30" />
+
+            <TextView
+                android:id="@+id/situationDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="유형"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/DATEnTIME"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/dateTimeIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="발생날짜"
+                app:srcCompat="@android:drawable/ic_menu_today" />
+
+            <TextView
+                android:id="@+id/dateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="발생날짜및 시각"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/dateTimeDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="사건발생 날짜"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/LOCATION"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/locationIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="발생위치"
+                app:srcCompat="@android:drawable/ic_menu_mylocation" />
+
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="발생위치"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/locationDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_span="2"
+                android:singleLine="false"
+                android:text="주소"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </TableRow>
+    </TableLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="640px"
+        android:layout_height="480px"
+        android:layout_marginBottom="356dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/screen_background_dark_transparent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
