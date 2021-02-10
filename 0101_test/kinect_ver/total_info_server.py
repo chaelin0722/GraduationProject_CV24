@@ -25,7 +25,7 @@ print('server received %r from %r' % (test, addr2))
 # 받은 메시지를 클라이언트로 다시 전송
 sock2.sendto(test, addr2)
 
-
+'''
 while True:
     UDP_PORT = 9091
     addr = UDP_IP, UDP_PORT
@@ -47,8 +47,11 @@ while True:
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
+            
             break
-    ''' ERROR!
+'''
+''' 
+ERROR!
  DeprecationWarning: The binary mode of fromstring is deprecated, as it behaves surprisingly on unicode inputs. Use frombuffer instead
   frame = numpy.fromstring(picture, dtype=numpy.uint8)
   
