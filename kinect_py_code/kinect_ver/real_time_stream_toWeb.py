@@ -42,15 +42,17 @@ while True:
 out.release()
 cv2.destroyAllWindows()
 '''
+
+
 import numpy as np
-from wrapperPyKinect2.acquisitionKinect import AcquisitionKinect
-from wrapperPyKinect2.frame import Frame as Frame
-Kinect = AcquisitionKinect()
-frame = Frame()
-import time
+import camera
+#from wrapperPyKinect2.acquisitionKinect import AcquisitionKinect
+#from wrapperPyKinect2.frame import Frame as Frame
+#Kinect = AcquisitionKinect()
+#frame = Frame()
 import cv2
 from flask import Flask, render_template, Response
-
+import time
 app = Flask(__name__)
 
 
@@ -62,6 +64,7 @@ def index():
 
 
 def gen():
+    '''
     while True:
         Kinect.get_frame(frame)
         Kinect.get_color_frame()
@@ -75,8 +78,15 @@ def gen():
         frames = cv2.imencode('.jpg', img)[1].tobytes()
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frames + b'\r\n')
         time.sleep(0.1)
+'''
+    cap = cv2.VideoCapture(0)
 
-
+    while True:
+        ret, frame = cap.read()
+        img = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
+        frames = cv2.imencode('.jpg', img)[1].tobytes()
+        yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frames + b'\r\n')
+        time.sleep(0.1)
 
 @app.route('/video_feed')
 def video_feed():
@@ -85,4 +95,4 @@ def video_feed():
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    app.run(host='192.168.0.7', debug=True)
+    app.run(host='127.0.0.1', debug=True)
