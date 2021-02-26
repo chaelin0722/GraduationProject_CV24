@@ -23,6 +23,7 @@ data = {
 import datetime
 #########socket
 
+'''
 ## date, time, situation_description, videostream, loaction
 count = 0
 
@@ -57,7 +58,7 @@ while count < 1:
     print("sleep 5secs")
     time.sleep(5)
     print("done sleepling")
-'''
+
 while True:
     ###############
     Kinect.get_frame(frame)
@@ -85,7 +86,7 @@ while True:
  '''
 
 
-'''
+
 
 #### test python client, emulate server
 import sys
@@ -113,7 +114,7 @@ host = '192.168.0.44'
 port = 9090
 #host2 = []
 addr = []
-host_temp = ['192.168.0.44','192.168.0.59']
+host_temp = ['192.168.0.59','192.168.0.75']
 #for i in range(10):
 #    host2.append(host + str(i))
 #addr = (host,port)
@@ -128,7 +129,7 @@ while count < 1:
     # 변수에 값이 없다면
     #if not line:
     #    break
-    s = socket(AF_INET, SOCK_DGRAM)`
+    s = socket(AF_INET, SOCK_DGRAM)
     ## date, time, situation_description, videostream, loaction
     result = requests.post(url, data)
     data = result.json()
@@ -158,5 +159,3 @@ while count < 1:
         # 서버로부터 받은 메시지 출력
         print('client received %r from %r' % (data, fromaddr))
     count = count+1
-
-'''

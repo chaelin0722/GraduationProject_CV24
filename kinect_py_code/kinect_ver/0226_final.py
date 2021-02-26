@@ -29,9 +29,6 @@ from keras.preprocessing import image
 
 Kinect = AcquisitionKinect()
 frame = Frame()
-### 소켓 통신 부분
-import sys
-from socket import *
 
 global count
 count = 1
@@ -43,23 +40,6 @@ tf.gfile = tf.io.gfile
 print("[INFO] TF verion = ", tf.__version__)
 
 ##################
-##location##
-import os
-import requests
-from dotenv import load_dotenv
-
-load_dotenv(verbose=True)
-
-LOCATION_API_KEY = os.getenv('LOCATION_API_KEY')
-url = f'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyBBI9hvhxn9BSa3Zb4dl3OMlBWmivQyNsU'
-info = {
-    'considerIp': True,
-}
-### date time ###
-import datetime
-import json
-import requests
-
 ###############
 ## DEPTH ##
 ## define
@@ -101,9 +81,48 @@ array_rz = []
 array_lx = []
 array_ly = []
 array_lz = []
+
+### 소켓 통신 부분
+from socket import *
+s = socket(AF_INET, SOCK_DGRAM)
+s.bind('',0)
+
+##location##
+import os
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
+
+LOCATION_API_KEY = os.getenv('LOCATION_API_KEY')
+url = f'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyBBI9hvhxn9BSa3Zb4dl3OMlBWmivQyNsU'
+info = {
+    'considerIp': True,
+}
+### date time ###
+import datetime
+import json
+import requests
+
+
+## date, time, situation_description, videostream, loaction
+result = requests.post(url, info)
+info = result.json()
+lat = info['location']['lat']
+long = info['location']['lng']
+now = datetime.datetime.now()
+nowDatetime = now.strftime('%Y-%m-%d %H:%M:%S')
+# print(nowDatetime)  # 2015-04-19 12:11:32
+
+total_info = {
+    "addr": {
+        "lat": lat,
+        "long": long
+    },
+    "DateTime": nowDatetime
+}
+host_temp = ['192.168.0.59','']
+
 # web browser
 from flask import Flask, render_template, Response
-
 
 ## gpu 제어
 gpus = tf.config.experimental.list_physical_devices('GPU')
@@ -213,33 +232,6 @@ def run_inference_for_single_image(model, image):
                                            tf.uint8)
         output_dict['detection_masks_reframed'] = detection_masks_reframed.numpy()
     return output_dict
-
-
-## date, time, situation_description, videostream, loaction
-result = requests.post(url, info)
-info = result.json()
-lat = info['location']['lat']
-long = info['location']['lng']
-now = datetime.datetime.now()
-nowDatetime = now.strftime('%Y-%m-%d %H:%M:%S')
-# print(nowDatetime)  # 2015-04-19 12:11:32
-
-total_info = {
-    "addr": {
-        "lat": lat,
-        "long": long
-    },
-    "DateTime": nowDatetime
-}
-# host_temp = [''.'']
-UDP_IP = "192.168.0.42"
-global cnt
-cnt = True
-
-#### for video s
-fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-out = cv2.VideoWriter('video.mp4', fourcc, 25.0, (640, 480))
-t_end = time.time() + 10
 
 
 ## main 부분
@@ -367,36 +359,28 @@ def run_inference(model):
             print("body_z : ", body_z)
             print("weapon_z : ", weapon_z)
             print("diff = ", diff)
-            global cnt
+
             # if diff is not None:
             # if body_z != 0 and weapon_z != 0 and diff < 30:
             if body_z != 0 and weapon_z != 0 and diff < 1200:
                 current_state = "danger"  # while 안에 두자
                 color = (0, 0, 255)
-            else:
-                current_state = "safe"  # while 안에 두자
-                color = (0, 255, 0)
-                '''
-                if cnt is True:
-                    UDP_PORT = 9090
-                    addr = UDP_IP, UDP_PORT
-                    s = socket(AF_INET, SOCK_DGRAM)
+                ## socket 쏘기!
+                UDP_PORT = 9090
+                # 여러개용
+                for i in range(2):
+                    addr = (host_temp[i], UDP_PORT)
                     s.sendto(json.dumps(total_info).encode(), addr)
                     data, fromaddr = s.recvfrom(1024)
                     print('client received %r from %r' % (data, fromaddr))
-                    # 여러개용
-                    for i in range(2):
-                        addr = (host_temp[1], UDP_PORT)
-                        s.sendto(json.dumps(total_info).encode(), addr)
-                        data, fromaddr = s.recvfrom(1024)
-                        print('client received %r from %r' % (data, fromaddr))
-                    '''
+            else:
+                current_state = "safe"  # while 안에 두자
+                color = (0, 255, 0)
 
         cv2.putText(image_obj, current_state, (300, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, color, 2, 8)
 
         ## web
-
-        img = cv2.resize(image_obj, (0, 0), fx=0.5, fy=0.5)
+        img = cv2.resize(image_obj, (300,220))
         frames = cv2.imencode('.jpg', img)[1].tobytes()
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frames + b'\r\n')
         time.sleep(0.1)
