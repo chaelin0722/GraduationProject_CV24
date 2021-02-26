@@ -103,18 +103,10 @@ data = {
     'considerIp': True,
 }
 BUFSIZE = 1024
-#host = '127.0.0.1'
-#host = '192.168.18.161'  # 정빈
-host = '192.168.0.44'
-#서버컴
-#host = '192.168.0.7'
-#host='203.153.146.18'
-#공기계 IP주소
-#host = '192.168.11.159'
 port = 9090
 #host2 = []
 addr = []
-host_temp = ['192.168.0.59','192.168.0.75']
+host_temp = ['192.168.0.59','192.168.0.75', '192.168.0.44']
 #for i in range(10):
 #    host2.append(host + str(i))
 #addr = (host,port)
@@ -146,10 +138,9 @@ while count < 1:
             "lat": lat,
             "long": long
         },
-        "situation": "emergency occured",
         "DateTime" : nowDatetime
     }
-    for i in range(2):
+    for i in range(3):
         addr = (host_temp[i], port)
         print('####',addr)
         # 입력받은 텍스트를 서버로 발송
