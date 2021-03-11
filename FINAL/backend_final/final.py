@@ -120,6 +120,7 @@ total_info = {
     "DateTime": nowDatetime
 }
 host_temp = ['192.168.0.44','192.168.0.75','192.168.0.59']
+#host_temp = ['192.168.0.44','192.168.0.59']
 
 global cnt
 cnt = 0
@@ -153,7 +154,6 @@ conv_base = VGG16(weights='imagenet',
                   include_top=False,
                   input_shape=(img_width, img_height, 3))
 ###
-
 app = Flask(__name__)
 
 @app.route('/')
@@ -174,31 +174,12 @@ def load_model_(model_name):
 # PATH_TO_LABELS = 'C:/Users/IVPL-D14/models/research/object_detection/local_models/knife_label_map.pbtxt'
 PATH_TO_LABELS = 'C:/Users/IVPL-D14/models/research/object_detection/training/weapon_labelmap.pbtxt'
 category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS)  # , use_display_name=True)
-# model_name = 'trained_model_large_original_15000'
-
-# model_name = '368_batch8_eff0_finetuned_model'          # 나름 괜찮음
-# model_name = '368_batch8_num39500_eff0_finetuned_model'  # 특정구간에서만 됨.. 좀 별로
-# model_name = '511_batch8_eff0_finetuned_model'            # 잡히는데 멀어지면 인식이 힘듬
 
 
-# model_name = 'training_kb_batch8_eff0_40000_fintuned_model_loss0.8'  # bat을 knife로
-# model_name = 'training_kb_batch8_eff0_newdata_80000_fintuned_model'   # bat인식 괜찮음. 이번엔 둘다 bat
+############################   model    #############################
 
-##############################0204##############################
-model_name = 'training_kb_batch8_eff0_0202_arranged_fintuned_model'  # knife인식 좋음
-# model_name = 'training_kb_batch8_eff0_newdata_arranged_fintuned_model'
-
-################ kife and bat #########################
-# model_name = 'nope/training_kb_batch8_eff0_40000_fintuned_model'
-# model_name = 'nope/training_kb_batch12_eff0_40000_fintuned_model'  # knife 가까워야 인식 (가로로 잡히는 순간 존재)
-# model_name = 'nope/training_kb_batch12_eff0_50000_fintuned_model' 위에랑 비슷
-################################################################+
-
-##############################0207#############################
-# model_name = 'training_kb_0206_more_bats_fintuned_model' #80000번 시도?
-# model_name = 'training_only_0206_bat_fintuned_model'
-###################설연휴 모델###############
-# model_name = 'training_kb_0211_re60000_more_bats_fintuned_model'  #가능성 있어보임
+model_name = 'training_kb_batch8_eff0_newdata_80000_fintuned_model'   # bat인식 괜찮음. 이번엔 둘다 bat
+# model_name = 'training_kb_batch8_eff0_0202_arranged_fintuned_model'  # knife인식 좋음
 
 print('[INFO] Downloading model and loading to network : ' + model_name)
 detection_model = load_model_(model_name)
@@ -366,22 +347,23 @@ def run_inference(model):
             # if body_z != 0 and weapon_z != 0 and diff < 30:
 
             global cnt
-            if body_z != 0 and weapon_z != 0 and diff < 1200:
+            if body_z != 0 and weapon_z != 0 and diff < 800:
                 current_state = "danger"  # while 안에 두자
                 color = (0, 0, 255)
-                if cnt < 1 and current_state == 'danger':
-                    ## socket 쏘기!
-                    UDP_PORT = 9090
-                    # 여러개용
-                    for i in range(3):
-                        addr = (host_temp[i], UDP_PORT)
-                        s.sendto(json.dumps(total_info).encode(), addr)
-                        data, fromaddr = s.recvfrom(1024)
-                        print('client received %r from %r' % (data, fromaddr))
-                    cnt = cnt + 1
             else:
                 current_state = "safe"  # while 안에 두자
                 color = (0, 255, 0)
+
+            if cnt is 0 and body_z != 0 and weapon_z != 0 and diff < 800:
+                ## socket 쏘기!
+                UDP_PORT = 9090
+                # 여러개용
+                cnt = cnt + 1
+                for i in range(3):
+                    addr = (host_temp[i], UDP_PORT)
+                    s.sendto(json.dumps(total_info).encode(), addr)
+                    data, fromaddr = s.recvfrom(1024)
+                    print('client received %r from %r' % (data, fromaddr))
 
         cv2.putText(image_obj, current_state, (300, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, color, 2, 8)
 
@@ -390,14 +372,12 @@ def run_inference(model):
         frames = cv2.imencode('.jpg', img)[1].tobytes()
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frames + b'\r\n')
         time.sleep(0.1)
-
         cv2.imshow('object_detection', image_obj)
 
         fn = fn + 1
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break
-
 
 @app.route('/video_feed')
 def video_feed():
