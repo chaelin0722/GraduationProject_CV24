@@ -1,10 +1,9 @@
-# Object Detection with Tensorflow API
+# Object and Depth Detection 
 
-2021 Graduation Project
-<Real Time detecting using Kinect(xboxone)> detect dangerous situation
+### 2021 Graduation Project
+### <Real Time detecting using Kinect(xboxone)> detect dangerous situation
 
 <hr>
-
 #### xboxone v2
 #### Windows 10
 #### Kinect SDK2.0
