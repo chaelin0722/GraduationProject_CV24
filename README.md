@@ -1,4 +1,4 @@
-# CCTV_Project
+# Object Detection with Tensorflow API
 
 2021 Graduation Project
 <Real Time detecting using Kinect(xboxone)> detect dangerous situation
