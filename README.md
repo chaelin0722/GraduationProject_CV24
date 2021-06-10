@@ -3,7 +3,7 @@
 ### 2021 Graduation Project
 ### <Real Time detecting using Kinect(xboxone)> detect dangerous situation
 
-
+ver. we used
 #### xboxone v2
 #### Windows 10
 #### Kinect SDK2.0
@@ -12,3 +12,6 @@
 #### Tensorflow 2.4.0
 #### Tensorflow Objection Detection API
 #### PYTHON 3.7.0
+
+<hr>
+#### the final result is in `/FINAL` directory.
